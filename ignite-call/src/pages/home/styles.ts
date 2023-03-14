@@ -1,7 +1,8 @@
-import { styled, Heading, Text } from '@ignite-ui/react'
+import { styled, } from '@ignite-ui/react'
+import {  Heading, Text } from '@itoddy-ui/react'
 
 export const Container = styled('div', {
-    maxWidth: 'calc(100vw - (100vw - 1160px) / 2)',
+    maxWidth: 'calc(100vw - (100vw - 1160px) / 2) ',
     width: '100%',
     marginLeft: 'auto',
     height: '100vh',
