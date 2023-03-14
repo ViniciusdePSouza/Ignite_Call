@@ -1,8 +1,8 @@
 import { Heading, Text } from "@ignite-ui/react";
-import { Container, Hero, Preview } from "./styles";
+import { Container, Hero, Preview } from './styles'
 import Image from "next/image";
 
-import previewImg from "../../assets/app_preview.png";
+import previewImg from "../../assets/app.png";
 
 export default function Home() {
   return (
@@ -19,7 +19,6 @@ export default function Home() {
         <Image
           src={previewImg}
           height={400}
-          width={400}
           quality={100}
           priority
           alt="Exemplo de calendário da aplicação em funcionamento"

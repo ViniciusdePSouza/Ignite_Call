@@ -1,13 +1,13 @@
 import { styled, Heading, Text } from '@ignite-ui/react'
 
 export const Container = styled('div', {
-    maxWidth: 'calc(100vw - (100vw - 1160px) / 2',
+    maxWidth: 'calc(100vw - (100vw - 1160px) / 2)',
+    width: '100%',
     marginLeft: 'auto',
     height: '100vh',
     display: 'flex',
     alignItems: 'center',
     gap: '$20',
-    background: 'red'
 })
 
 export const Hero = styled('div', {
