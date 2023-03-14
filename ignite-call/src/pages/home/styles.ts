@@ -1,5 +1,5 @@
 import { styled, } from '@ignite-ui/react'
-import {  Heading, Text } from '@itoddy-ui/react'
+import { Heading, Text } from '@itoddy-ui/react'
 
 export const Container = styled('div', {
     maxWidth: 'calc(100vw - (100vw - 1160px) / 2) ',
@@ -15,13 +15,13 @@ export const Hero = styled('div', {
     maxWidth: 480,
     padding: '0 $10',
 
-    [`${Heading}`]: {
+    [` > ${Heading}`]: {
         '@media(max-width: 600px)': {
             fontSize: '$6xl'
         }
     },
 
-    [`${Text}`]: {
+    [` > ${Text}`]: {
         marginTop: '$2',
         color: '$gray200',
     },
