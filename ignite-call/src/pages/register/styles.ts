@@ -32,3 +32,5 @@ export const Form = styled(Box, {
         gap: '$2',
     }
 })
+
+export const FormValidationAdvisor = styled('div', {})
