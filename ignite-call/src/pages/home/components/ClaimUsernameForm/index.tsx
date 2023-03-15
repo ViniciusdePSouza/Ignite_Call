@@ -1,10 +1,10 @@
-import { Button, TextInput } from "@itoddy-ui/react/dist";
+import { Button } from "@itoddy-ui/react/dist";
 import { ArrowRight } from "phosphor-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormAnnotation } from "./styles";
-import { Text } from "@ignite-ui/react";
+import { Text, TextInput } from "@ignite-ui/react";
 
 const claimUsernameFormSchema = z.object({
   username: z
@@ -46,9 +46,9 @@ export default function ClaimUsernameForm() {
       </Form>
       <FormAnnotation>
         <Text size="sm">
-          {errors.username
-            ? errors.username.message
-            : "Digite o nome de usuário desejado !"}
+        {errors.username
+          ? errors.username.message
+          : "Digite o nome de usuário desejado !"}
         </Text>
       </FormAnnotation>
     </>

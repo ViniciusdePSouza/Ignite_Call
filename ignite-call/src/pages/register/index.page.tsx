@@ -3,10 +3,10 @@ import {
   Heading,
   Multistep,
   Text,
-  TextInput,
 } from "@itoddy-ui/react/dist";
 import { ArrowRight } from "phosphor-react";
 import { Container, Form, FormValidationAdvisor, Header } from "./styles";
+import { TextInput } from "@ignite-ui/react";
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -15,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 const registerFormSchema = z.object({
   username: z
     .string()
-    .min(3)
+    .min(3,{ message: "O nome de usuário deve ter no mínimo 3 caracteres"} )
     .regex(/^([a-z\\-]+)$/i, {
       message: "Apenas letras e hifens são permitidos",
     })
@@ -23,10 +23,7 @@ const registerFormSchema = z.object({
 
   fullname: z
     .string()
-    .min(6)
-    .regex(/^([a-z]+)$/i, {
-      message: "Apenas letras são permitidos",
-    }),
+    .min(6, { message: "O nome deve ter no mínimo 6 caracteres"} )
 });
 
 type RegisterFormData = z.infer<typeof registerFormSchema>;
@@ -39,6 +36,10 @@ export default function Register() {
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerFormSchema),
   });
+
+  async function handleRegisterUser(data: RegisterFormData) {
+    console.log(data)
+  }
 
   return (
     <Container>
@@ -53,11 +54,11 @@ export default function Register() {
         <Multistep size={4} currentStep={1} />
       </Header>
 
-      <Form as="form">
+      <Form as="form" onSubmit={handleSubmit(handleRegisterUser)}>
         <label>
           <Text size="sm">Nome do usuário</Text>
           <TextInput
-            prefix="ignite.com"
+            prefix="ignite.com/"
             placeholder="seu-usuario"
             {...register("username")}
           />
@@ -71,7 +72,7 @@ export default function Register() {
             placeholder="seu nome completo"
             {...register("fullname")}
           />
-          <FormValidationAdvisor>
+          <FormValidationAdvisor size="sm">
             {errors.fullname ? errors.fullname.message : ""}
           </FormValidationAdvisor>
         </label>

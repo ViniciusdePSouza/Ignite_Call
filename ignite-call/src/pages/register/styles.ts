@@ -33,4 +33,6 @@ export const Form = styled(Box, {
     }
 })
 
-export const FormValidationAdvisor = styled('div', {})
+export const FormValidationAdvisor = styled(Text, {
+    color: '#f75a68',
+})
