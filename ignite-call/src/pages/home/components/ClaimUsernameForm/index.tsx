@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormAnnotation } from "./styles";
 import { Text, TextInput } from "@ignite-ui/react";
+import { useRouter } from "next/router";
 
 const claimUsernameFormSchema = z.object({
   username: z
@@ -19,6 +20,7 @@ const claimUsernameFormSchema = z.object({
 type ClaimUsernameFormData = z.infer<typeof claimUsernameFormSchema>;
 
 export default function ClaimUsernameForm() {
+  const router = useRouter()
   const {
     register,
     handleSubmit,
@@ -28,7 +30,9 @@ export default function ClaimUsernameForm() {
   });
 
   async function handleClaimUsername(data: ClaimUsernameFormData) {
-    console.log(data);
+    const { username } = data
+
+    await router.push(`/register?username=${username}`)
   }
 
   return (
