@@ -8,6 +8,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { api } from "@/lib/axios";
 
 const registerFormSchema = z.object({
   username: z
@@ -18,7 +19,7 @@ const registerFormSchema = z.object({
     })
     .transform((username) => username.toLowerCase()),
 
-  fullname: z
+  name: z
     .string()
     .min(6, { message: "O nome deve ter no mínimo 6 caracteres" }),
 });
@@ -38,7 +39,14 @@ export default function Register() {
   });
 
   async function handleRegisterUser(data: RegisterFormData) {
-    console.log(data);
+    try{
+      await api.post('users', {
+        name: data.name,
+        username: data.username
+      })
+    }catch(e){
+      console.log(e)
+    }
   }
 
   useEffect(() => {
@@ -76,10 +84,10 @@ export default function Register() {
           <Text size="sm">Nome Completo</Text>
           <TextInput
             placeholder="seu nome completo"
-            {...register("fullname")}
+            {...register("name")}
           />
           <FormValidationAdvisor size="sm">
-            {errors.fullname ? errors.fullname.message : ""}
+            {errors.name ? errors.name.message : ""}
           </FormValidationAdvisor>
         </label>
 
