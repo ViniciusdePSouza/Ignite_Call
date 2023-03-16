@@ -5,10 +5,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method !== "POST") {
     return res.status(405).end();
   }
-
   const {name, username } = req.body
 
-  console.log(name, username)
+  const checkUserExistense = await prisma.user.findUnique({
+    where: {
+        username
+    }
+  })
+
+  if(checkUserExistense) {
+    return res.status(400).json({
+        message: ' this username is already been used'
+    })
+  }
 
   const user = await prisma.user.create({
     data: {
