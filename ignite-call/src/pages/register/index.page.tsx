@@ -1,7 +1,7 @@
-import { Button, Heading, Multistep, Text } from "@itoddy-ui/react/dist";
+
 import { ArrowRight } from "phosphor-react";
 import { Container, Form, FormValidationAdvisor, Header } from "./styles";
-import { TextInput } from "@ignite-ui/react";
+import { TextInput  } from "@ignite-ui/react";
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { api } from "@/lib/axios";
 import { AxiosError } from "axios";
+import { Heading, Multistep, Text, Button } from "@itoddy-ui/react/dist";
 
 const registerFormSchema = z.object({
   username: z
@@ -46,7 +47,7 @@ export default function Register() {
         username: data.username
       })
 
-      alert('usuário criado com sucesso')
+      await router.push('/register/calendar-connection')
     }catch(err){
       if(err instanceof AxiosError && err?.response?.data?.message) {
         alert(err.response.data.message)

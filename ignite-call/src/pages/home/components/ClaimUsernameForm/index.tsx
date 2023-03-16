@@ -1,10 +1,10 @@
-import { Button } from "@itoddy-ui/react/dist";
+import { Button, Text } from "@itoddy-ui/react/dist";
 import { ArrowRight } from "phosphor-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormAnnotation } from "./styles";
-import { Text, TextInput } from "@ignite-ui/react";
+import { TextInput } from "@ignite-ui/react";
 import { useRouter } from "next/router";
 
 const claimUsernameFormSchema = z.object({
