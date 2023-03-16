@@ -45,6 +45,8 @@ export default function Register() {
         name: data.name,
         username: data.username
       })
+
+      alert('usuário criado com sucesso')
     }catch(err){
       if(err instanceof AxiosError && err?.response?.data?.message) {
         alert(err.response.data.message)
