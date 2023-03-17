@@ -6,6 +6,7 @@ import { TextInput } from "@ignite-ui/react";
 import { api } from "@/lib/axios";
 import { AxiosError } from "axios";
 import { ConnectBox, ConnectItem } from "./styles";
+import { signIn } from "next-auth/react";
 
 export default function CalendarConnection() {
   return (
@@ -25,7 +26,7 @@ export default function CalendarConnection() {
         <ConnectItem>
           <Text>Google Calender</Text>
           
-          <Button variant="secondary" size="sm">
+          <Button variant="secondary" size="sm" onClick={ () => signIn('google')}>
             Conectar
             <ArrowRight />
           </Button>
