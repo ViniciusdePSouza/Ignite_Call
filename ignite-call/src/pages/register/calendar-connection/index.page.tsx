@@ -1,14 +1,22 @@
 import { Button, Heading, Multistep, Text } from "@itoddy-ui/react/dist";
-import { ArrowRight } from "phosphor-react";
+import { ArrowRight, Check } from "phosphor-react";
 import { Container, Header } from "../styles";
-import { TextInput } from "@ignite-ui/react";
 
-import { api } from "@/lib/axios";
-import { AxiosError } from "axios";
-import { ConnectBox, ConnectItem } from "./styles";
-import { signIn } from "next-auth/react";
+import { AuthError, ConnectBox, ConnectItem } from "./styles";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 export default function CalendarConnection() {
+  const router = useRouter();
+  const session = useSession();
+
+  const hasAuthError = !!router.query.error;
+  const isSignedIn = session.status === "authenticated";
+  
+  async function handleCalendarConnection() {
+    await signIn('google', {callbackUrl: '/register/calendar-connection'})
+  }
+
   return (
     <Container>
       <Header>
@@ -25,14 +33,32 @@ export default function CalendarConnection() {
       <ConnectBox>
         <ConnectItem>
           <Text>Google Calender</Text>
-          
-          <Button variant="secondary" size="sm" onClick={ () => signIn('google')}>
-            Conectar
-            <ArrowRight />
-          </Button>
+
+          {isSignedIn ? (
+            <Button size="sm" disabled>
+              Conectado
+              <Check />
+            </Button>
+          ) : (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleCalendarConnection}
+            >
+              Conectar
+              <ArrowRight />
+            </Button>
+          )}
         </ConnectItem>
 
-        <Button>
+        {hasAuthError && (
+          <AuthError size="sm">
+            Falha ao conectar ao Google, verifique se você habilitou as
+            permissões de acesso ao Google Calendar
+          </AuthError>
+        )}
+
+        <Button type="submit" disabled={!isSignedIn}>
           Seu Próximo Passo
           <ArrowRight />
         </Button>
