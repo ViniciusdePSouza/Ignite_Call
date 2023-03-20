@@ -17,7 +17,7 @@ export const IntervalItem = styled('div', {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    pading: '$3 $4',
+    padding: '$3 $4',
 
     '& + &': {
         borderTop: '1px solid $gray600'
