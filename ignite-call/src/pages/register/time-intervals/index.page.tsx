@@ -1,3 +1,4 @@
+import { convertTimeStringToMinutes } from "@/utils/convert-time-string-to-minutes";
 import { getWeekDays } from "@/utils/get-week-day";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TextInput } from "@ignite-ui/react";
@@ -15,6 +16,7 @@ import { z } from "zod";
 import { Container, Header } from "../styles";
 
 import {
+  FormErrorMessage,
   IntervalBox,
   IntervalContainer,
   IntervalDay,
@@ -34,12 +36,25 @@ const timeIntervalsFormSchema = z.object({
     )
     .length(7)
     .transform((intervals) => intervals.filter((interval) => interval.enabled))
-    .refine((intervals) => intervals.length > 0,{ 
-      message: 'É necessário que haja ao menos um dia da semana selecionado'
-    }),
+    .refine((intervals) => intervals.length > 0, {
+      message: "É necessário que haja ao menos um dia da semana selecionado",
+    })
+    .transform((intervals) => {
+      return intervals.map((interval) => {
+        return {
+          weekDay: interval.weekDay,
+          startTimeInMinutes: convertTimeStringToMinutes(interval.startTime),
+          endTimeInMinutes: convertTimeStringToMinutes(interval.endTime),
+        };
+      });
+    })
+    .refine(intervals => {
+      return intervals.every(interval => interval.endTimeInMinutes - 60 >= interval.startTimeInMinutes)
+    }, {message: 'O horário de conclusão da reunião precisa ter ao menos 1 hr a mais que a de início '}),
 });
 
-type TimeIntervalsFormData = z.infer<typeof timeIntervalsFormSchema>;
+type TimeIntervalsFormInput = z.input<typeof timeIntervalsFormSchema>;
+type TimeIntervalsFormOutput = z.output<typeof timeIntervalsFormSchema>;
 
 export default function TimeIntervals() {
   const {
@@ -48,7 +63,7 @@ export default function TimeIntervals() {
     handleSubmit,
     watch,
     formState: { isSubmitting, errors },
-  } = useForm({
+  } = useForm<TimeIntervalsFormInput>({
     resolver: zodResolver(timeIntervalsFormSchema),
     defaultValues: {
       intervals: [
@@ -63,7 +78,7 @@ export default function TimeIntervals() {
     },
   });
 
-  const intervals = watch('intervals')
+  const intervals = watch("intervals");
 
   const weekDays = getWeekDays();
 
@@ -73,7 +88,8 @@ export default function TimeIntervals() {
   });
 
   function handleSetTimeIntervals(data: any) {
-    console.log(data);
+    const formData = data as TimeIntervalsFormOutput
+    console.log(formData);
   }
   return (
     <Container>
@@ -98,13 +114,13 @@ export default function TimeIntervals() {
                     control={control}
                     render={({ field }) => {
                       return (
-                        <Checkbox 
-                      onCheckedChange={(checked) => {
-                        field.onChange(checked == true)
-                      }}
-                      checked={field.value}
-                      />
-                      )
+                        <Checkbox
+                          onCheckedChange={(checked) => {
+                            field.onChange(checked == true);
+                          }}
+                          checked={field.value}
+                        />
+                      );
                     }}
                   />
                   <Text>{weekDays[field.weekDay]}</Text>
@@ -130,7 +146,13 @@ export default function TimeIntervals() {
           })}
         </IntervalContainer>
 
-        <Button type="submit">
+        {errors.intervals && (
+          <FormErrorMessage size="sm">
+            {errors.intervals.message}
+          </FormErrorMessage>
+        )}
+
+        <Button type="submit" disabled={isSubmitting}>
           Próximo passo
           <ArrowRight />
         </Button>

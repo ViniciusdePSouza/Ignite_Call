@@ -1,5 +1,5 @@
 import { styled } from "@ignite-ui/react";
-import { Box } from "@itoddy-ui/react/dist";
+import { Box, Text } from "@itoddy-ui/react/dist";
 
 export const IntervalBox = styled(Box, {
     marginTop: '$6',
@@ -38,4 +38,9 @@ export const IntervalInputs = styled('div', {
     'input::-webkit-calendar-picker-indicator': {
       filter: 'invert(100%) brightness(40%)',
     },
+  })
+
+  export const FormErrorMessage = styled(Text, {
+    color: '#f75a68',
+    marginBottom: '$2'
   })
