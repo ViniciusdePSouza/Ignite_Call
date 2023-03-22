@@ -10,6 +10,7 @@ import {
   Multistep,
   Text,
 } from "@itoddy-ui/react/dist";
+import { useRouter } from "next/router";
 
 import { ArrowRight } from "phosphor-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
@@ -79,6 +80,8 @@ export default function TimeIntervals() {
     },
   });
 
+  const router = useRouter()
+
   const intervals = watch("intervals");
 
   const weekDays = getWeekDays();
@@ -93,7 +96,9 @@ export default function TimeIntervals() {
     
     await api.post('/users/time-intervals', {
       intervals
-    } )
+    })
+
+    await router.push('/register/update-profile')
   }
   return (
     <Container>
@@ -113,6 +118,7 @@ export default function TimeIntervals() {
             return (
               <IntervalItem key={field.id}>
                 <IntervalDay>
+                  {index &&
                   <Controller
                     name={`intervals.${index}.enabled`}
                     control={control}
@@ -126,7 +132,7 @@ export default function TimeIntervals() {
                         />
                       );
                     }}
-                  />
+                  />}
                   <Text>{weekDays[field.weekDay]}</Text>
                 </IntervalDay>
                 <IntervalInputs>
