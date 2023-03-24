@@ -32,8 +32,6 @@ export default function UpdateProfile() {
   const session = useSession()
   const router = useRouter();
 
-  console.log(session)
-
   const {
     register,
     handleSubmit,
@@ -60,7 +58,7 @@ export default function UpdateProfile() {
           editar essas informações depois sem problemas.
         </Text>
 
-        <Multistep size={4} currentStep={1} />
+        <Multistep size={4} currentStep={4} />
       </Header>
 
       <ProfileBox as="form" onSubmit={handleSubmit(handleUpdateProfile)}>
