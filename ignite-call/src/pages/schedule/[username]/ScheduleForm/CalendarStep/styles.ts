@@ -2,16 +2,15 @@ import { styled } from "@ignite-ui/react";
 import { Box, Text } from "@itoddy-ui/react/dist";
 
 export const Container = styled(Box, {
-    margin: '$6 auto 8',
-    padding: 8,
+    margin: '$6 auto 0',
+    padding: 0,
     display: 'grid',
-    maxWidth: '100%',
     position: 'relative',
 
     variants: {
         isTimePickerOpen: {
             true: {
-                gridAutoColumns: '1fr 200px',
+                gridTemplateColumns: '1fr 280px',
 
                 '@media(max-width: 988px': {
                     gridAutoColumns: '1fr'
@@ -29,7 +28,7 @@ export const Container = styled(Box, {
 
 export const TimePicker = styled('div', {
     borderLeft: '1px solid $gray600',
-    padding: '$6 $6 8',
+    padding: '$6 $6 0',
     overflowY: 'scroll',
 
     position: 'absolute',
@@ -53,7 +52,7 @@ export const TimePickerList = styled('div', {
     gridTemplateColumns: '1fr',
     gap : '$2',
 
-    '@media(max-width:980)': {
+    '@media(max-width:900)': {
         gridTemplateColumns: '2fr',
     }
 })
@@ -61,8 +60,9 @@ export const TimePickerList = styled('div', {
 export const TimePickerItem = styled('button',{
     border: 0,
     background: '$gray600',
-    padding: '$2 8',
+    padding: '$2 0',
     cursor: 'pointer',
+    color: "$gray100",
     borderRadius: '$sm',
     fontSize: '$sm',
     lineHeight: '$base',
