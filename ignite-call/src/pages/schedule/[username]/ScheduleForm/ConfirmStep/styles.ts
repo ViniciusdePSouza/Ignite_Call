@@ -39,7 +39,7 @@ export const FormHeader = styled('div', {
 })
 
 export const FormError = styled(Text, {
-    color: '#f7a68'
+    color: '#F75A68'
 })
 
 export const FormActions = styled('div', {
