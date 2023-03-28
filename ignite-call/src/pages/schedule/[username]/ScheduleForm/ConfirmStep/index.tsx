@@ -14,7 +14,7 @@ const confirmStepFormSchema = z.object({
 
 type ConfirmStepFormData = z.infer<typeof confirmStepFormSchema>;
 
-export default function ConfirmStep() {
+export function ConfirmStep() {
   function handleConfirmScheduling() {
     console.log('ola')
   }
@@ -39,6 +39,7 @@ export default function ConfirmStep() {
           18:00h
         </Text>
 
+      </FormHeader>
         <label>
           <Text size="sm">Nome Completo</Text>
           <TextInput placeholder="Seu Nome" {...register("name")} />
@@ -55,7 +56,6 @@ export default function ConfirmStep() {
           <Text size="sm">Observações</Text>
           <TextArea {...register("observations")} />
         </label>
-      </FormHeader>
 
       <FormActions>
         <Button type="button" variant="tertiary">

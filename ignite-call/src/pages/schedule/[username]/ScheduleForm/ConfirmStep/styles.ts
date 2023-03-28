@@ -2,10 +2,10 @@ import { styled } from "@ignite-ui/react"
 import { Box, Text } from "@itoddy-ui/react/dist"
 
 export const ConfirmForm = styled(Box, {
-    maxWidth: 548,
-    margin: '$6 auto 8',
+    maxWidth: 540,
+    margin: '$6 auto 0',
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection:"column",
     gap: '$4',
 
     label: {
@@ -19,6 +19,7 @@ export const FormHeader = styled('div', {
     display: 'flex',
     alignItems: 'center',
     gap: '$2',
+    width: '100%',
 
     paddingBottom: '$6',
     marginBottom: '$2',
