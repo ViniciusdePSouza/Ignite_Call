@@ -1,5 +1,7 @@
 import { getWeekDays } from "@/utils/get-week-day";
+import dayjs from "dayjs";
 import { CaretLeft, CaretRight } from "phosphor-react";
+import { useMemo, useState } from "react";
 import {
   CalendarActions,
   CalendarContainer,
@@ -9,21 +11,109 @@ import {
   CalendarDay,
 } from "./styles";
 
+interface CalendarWeek {
+  week: number;
+  days: Array<{
+    date: dayjs.Dayjs;
+    disabled: boolean;
+  }>;
+}
+
+type CalendarWeeks = CalendarWeek[];
+
 export function Calendar() {
   const shortWeekDays = getWeekDays({ short: true });
+
+  const [currentDate, setCurrentDate] = useState(() => {
+    return dayjs().set("date", 1);
+  });
+
+  function handleNextMonth() {
+    const nextMonth = currentDate.add(1, "month");
+
+    setCurrentDate(nextMonth);
+  }
+  function handlePreviousMonth() {
+    const previousMonth = currentDate.subtract(1, "month");
+
+    setCurrentDate(previousMonth);
+  }
+
+  const currentMonth = currentDate.format("MMMM");
+  const currentYear = currentDate.format("YYYY");
+
+  const calendarWeeks = useMemo(() => {
+    const daysInMonthArray = Array.from({
+      length: currentDate.daysInMonth(),
+    }).map((_, i) => {
+      return currentDate.set("date", i + 1);
+    });
+
+    const firstWeekDay = currentDate.get("day");
+
+    const lastDayInCurrentMonth = currentDate.set(
+      "date",
+      currentDate.daysInMonth()
+    );
+    const lastWeekDay = lastDayInCurrentMonth.get("day");
+
+    const previousMonthFillArray = Array.from({
+      length: firstWeekDay,
+    })
+      .map((_, i) => {
+        return currentDate.subtract(i + 1, "day");
+      })
+      .reverse();
+
+    const nextMonthFillArray = Array.from({
+      length: 7 - (lastWeekDay + 1),
+    }).map((_, i) => {
+      return lastDayInCurrentMonth.add(i + 1, "day");
+    });
+
+    const calendarDays = [
+      ...previousMonthFillArray.map((date) => {
+        return { date, disabled: true };
+      }),
+      ...daysInMonthArray,
+      ...nextMonthFillArray.map((date) => {
+        return { date, disabled: true };
+      }),
+    ];
+
+    const calendarWeeks = calendarDays.reduce<CalendarWeeks>(
+      (weeks, _, i, original) => {
+        const hasWeekStarted = i % 7 == 0;
+
+        if (hasWeekStarted) {
+          weeks.push({
+            week: i / 7 + 1,
+            days: original.slice(i, i + 7),
+          });
+        }
+
+        return weeks;
+      },
+      []
+    );
+
+    return calendarWeeks;
+  }, [currentDate]);
+
+  console.log(calendarWeeks);
 
   return (
     <CalendarContainer>
       <CalendarHeader>
         <CalendarTitle>
-          Dezembro <span>2022</span>
+          {currentMonth} <span>{currentYear}</span>
         </CalendarTitle>
 
         <CalendarActions>
-          <button>
+          <button onClick={handlePreviousMonth} title="Mês Anterior">
             <CaretLeft />
           </button>
-          <button>
+          <button onClick={handleNextMonth} title="Próximo Mês ">
             <CaretRight />
           </button>
         </CalendarActions>
@@ -40,24 +130,21 @@ export function Calendar() {
         </thead>
 
         <tbody>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td><CalendarDay>1</CalendarDay></td>
-            <td><CalendarDay>2</CalendarDay></td>
-            <td><CalendarDay>3</CalendarDay></td>
-          </tr>
-          <tr>
-            <td><CalendarDay>4</CalendarDay></td>
-            <td><CalendarDay>5</CalendarDay></td>
-            <td><CalendarDay>6</CalendarDay></td>
-            <td><CalendarDay>7</CalendarDay></td>
-            <td><CalendarDay>8</CalendarDay></td>
-            <td><CalendarDay>9</CalendarDay></td>
-            <td><CalendarDay>10</CalendarDay></td>
-          </tr>
+          {calendarWeeks.map(({ week, days }) => {
+            return (
+              <tr key={week}>
+                {days.map(({ date, disabled }) => {
+                  return (
+                    <td key={date.toString()}>
+                      <CalendarDay disabled={disabled}>
+                        {date.get('date')}
+                      </CalendarDay>
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
         </tbody>
       </CalendarBody>
     </CalendarContainer>
