@@ -75,7 +75,9 @@ export function Calendar() {
       ...previousMonthFillArray.map((date) => {
         return { date, disabled: true };
       }),
-      ...daysInMonthArray,
+      ...daysInMonthArray.map((date) => {
+       return {date, disabled: false}
+      }),
       ...nextMonthFillArray.map((date) => {
         return { date, disabled: true };
       }),
@@ -99,8 +101,6 @@ export function Calendar() {
 
     return calendarWeeks;
   }, [currentDate]);
-
-  console.log(calendarWeeks);
 
   return (
     <CalendarContainer>
@@ -132,10 +132,10 @@ export function Calendar() {
         <tbody>
           {calendarWeeks.map(({ week, days }) => {
             return (
-              <tr key={week}>
-                {days.map(({ date, disabled }) => {
+              <tr key={week}> 
+                {days.map(({ date, disabled }, index) => {
                   return (
-                    <td key={date.toString()}>
+                    <td key={index}>
                       <CalendarDay disabled={disabled}>
                         {date.get('date')}
                       </CalendarDay>
