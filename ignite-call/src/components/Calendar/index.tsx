@@ -10,6 +10,9 @@ import {
   CalendarBody,
   CalendarDay,
 } from "./styles";
+import { useRouter } from "next/router";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/axios";
 
 interface CalendarWeek {
   week: number;
@@ -17,6 +20,10 @@ interface CalendarWeek {
     date: dayjs.Dayjs;
     disabled: boolean;
   }>;
+}
+
+interface UnavailableDates {
+  unavailableWeekDays: number[];
 }
 
 type CalendarWeeks = CalendarWeek[];
@@ -29,9 +36,26 @@ interface CalendarProps {
 export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
   const shortWeekDays = getWeekDays({ short: true });
 
+  const router = useRouter();
+  const username = String(router.query.username);
+
   const [currentDate, setCurrentDate] = useState(() => {
     return dayjs().set("date", 1);
   });
+
+  const { data: unavailableDates } = useQuery<UnavailableDates>(
+    ["unavailable-dates", currentDate.get("year"), currentDate.get("month")],
+    async () => {
+      const response = await api.get(`users/${username}/unavailable-dates`, {
+        params: {
+          year: currentDate.get("year"),
+          month: currentDate.get("month"),
+        },
+      });
+
+      return response.data;
+    }
+  );
 
   function handleNextMonth() {
     const nextMonth = currentDate.add(1, "month");
@@ -81,7 +105,12 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
         return { date, disabled: true };
       }),
       ...daysInMonthArray.map((date) => {
-        return { date, disabled: date.endOf("day").isBefore(new Date()) };
+        return {
+          date,
+          disabled:
+            date.endOf("day").isBefore(new Date()) ||
+            unavailableDates?.unavailableWeekDays.includes(date.get("day")),
+        };
       }),
       ...nextMonthFillArray.map((date) => {
         return { date, disabled: true };
@@ -105,7 +134,7 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
     );
 
     return calendarWeeks;
-  }, [currentDate]);
+  }, [currentDate, unavailableDates]);
 
   return (
     <CalendarContainer>
