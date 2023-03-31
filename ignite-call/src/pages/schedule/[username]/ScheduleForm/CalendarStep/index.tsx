@@ -1,60 +1,75 @@
 import { Calendar } from "@/components/Calendar";
-import { useEffect, useState } from "react";
-import { Container, TimePicker, TimePickerHeader, TimePickerItem, TimePickerList } from "./styles";
+import { useState } from "react";
+import {
+  Container,
+  TimePicker,
+  TimePickerHeader,
+  TimePickerItem,
+  TimePickerList,
+} from "./styles";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
 import { api } from "@/lib/axios";
+import { useQuery } from "@tanstack/react-query";
+
+interface AvailabilityProps {
+  possibleHours: number[];
+  availableHours: number[];
+}
 
 export function CalendarStep() {
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-    const [availability, setAvailability] = useState(null)
-    const isDateSelected = !!selectedDate
-    const router = useRouter()
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const isDateSelected = !!selectedDate;
+  const router = useRouter();
 
-    const username = String(router.query.username)
+  const username = String(router.query.username);
 
-    const weekDay = selectedDate ? dayjs(selectedDate).format('dddd') : null
-    const describedDay = isDateSelected ? dayjs(selectedDate).format('DD[ de ]MMMM') : null
+  const weekDay = selectedDate ? dayjs(selectedDate).format("dddd") : null;
+  const describedDay = isDateSelected
+    ? dayjs(selectedDate).format("DD[ de ]MMMM")
+    : null;
 
-    useEffect(() => {
-        if(!selectedDate) {
-            return 
-        }
+  const selectedDateWithNoTime = selectedDate
+    ? dayjs(selectedDate).format("YYYY-MM-DD")
+    : null;
 
-        api.get(`/user/${username}/availability`, {
-            params: {
-                date: dayjs(selectedDate).format('YYYY-MM-DD'),
-            }
-        }).then(response => {
-            console.log(response.data);
-        })
-    }, [selectedDate, username])
+  const { data: availability } = useQuery<AvailabilityProps>(["availability", selectedDateWithNoTime], async () => {
+    const response = await api.get(`users/${username}/availability`, {
+      params: {
+        date: selectedDateWithNoTime,
+      },
+    });
 
-    return( 
-        <Container isTimePickerOpen={isDateSelected}>
-            <Calendar selectedDate={selectedDate} onDateSelected={setSelectedDate}/>
+    return response.data
+  }, 
+  {
+    enabled: !!selectedDate
+  });
 
-            {isDateSelected && (
-            <TimePicker>
-                <TimePickerHeader>
-                   {weekDay} <span>{describedDay}</span>
-                </TimePickerHeader>
+  return (
+    <Container isTimePickerOpen={isDateSelected}>
+      <Calendar selectedDate={selectedDate} onDateSelected={setSelectedDate} />
 
-                <TimePickerList>
-                    <TimePickerItem>08:00</TimePickerItem>
-                    <TimePickerItem>09:00</TimePickerItem>
-                    <TimePickerItem>10:00</TimePickerItem>
-                    <TimePickerItem>11:00</TimePickerItem>
-                    <TimePickerItem>12:00</TimePickerItem>
-                    <TimePickerItem>13:00</TimePickerItem>
-                    <TimePickerItem>14:00</TimePickerItem>
-                    <TimePickerItem>15:00</TimePickerItem>
-                    <TimePickerItem>16:00</TimePickerItem>
-                    <TimePickerItem>17:00</TimePickerItem>
-                    <TimePickerItem>18:00</TimePickerItem>
-                </TimePickerList>
-            </TimePicker>
-            )}
-        </Container>
-    )
+      {isDateSelected && (
+        <TimePicker>
+          <TimePickerHeader>
+            {weekDay} <span>{describedDay}</span>
+          </TimePickerHeader>
+
+          <TimePickerList>
+            {availability?.possibleHours.map((hour) => {
+              const formattedHour = hour.toString().padStart(2, "0");
+              const isItBooked = !availability.availableHours.includes(hour);
+
+              return (
+                <TimePickerItem key={hour} disabled={isItBooked}>
+                  {formattedHour}:00
+                </TimePickerItem>
+              );
+            })}
+          </TimePickerList>
+        </TimePicker>
+      )}
+    </Container>
+  );
 }
