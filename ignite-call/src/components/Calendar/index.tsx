@@ -24,6 +24,7 @@ interface CalendarWeek {
 
 interface UnavailableDates {
   unavailableWeekdays: number[];
+  unavailableDates: number[];
 }
 
 type CalendarWeeks = CalendarWeek[];
@@ -52,10 +53,10 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
           month: currentDate.get("month"),
         },
       });
-      
+
       return response.data;
     }
-    );
+  );
 
   function handleNextMonth() {
     const nextMonth = currentDate.add(1, "month");
@@ -108,7 +109,9 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
         return {
           date,
           disabled:
-            date.endOf("day").isBefore(new Date()) || unavailableDates?.unavailableWeekdays.includes(date.get('days'))
+            date.endOf("day").isBefore(new Date()) ||
+            unavailableDates?.unavailableWeekdays.includes(date.get("day")) ||
+            unavailableDates?.unavailableWeekdays.includes(date.get("date")),
         };
       }),
       ...nextMonthFillArray.map((date) => {
