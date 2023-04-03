@@ -42,7 +42,7 @@ export default async function handle(
     );
   });
 
-  const unavailableDatesRaw = await prisma.$queryRaw`
+    const unavailableDatesRaw: Array<{date: number[]}> = await prisma.$queryRaw`
     SELECT 
       strftime('%d', S.date) AS date,
       COUNT(S.date) AS amount,
@@ -62,5 +62,7 @@ export default async function handle(
     HAVING amount >= size
   `;
 
-  return res.json({ unavailableWeekdays });
+  const unavailableDates = unavailableDatesRaw.map(item => item.date)
+
+  return res.json({ unavailableWeekdays, unavailableDates });
 }
