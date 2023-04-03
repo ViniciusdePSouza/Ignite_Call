@@ -42,11 +42,11 @@ export default async function handle(
     );
   });
 
-  const unavailableDatesRaw: Array<{ date: number }> = await prisma.$queryRaw`
+  const unavailableDatesRaw = await prisma.$queryRaw`
     SELECT 
       strftime('%d', S.date) AS date,
       COUNT(S.date) AS amount,
-      ((UTI.time_end_in_minutes - UTI.time_start_in_minutes) / 60) AS size
+      ((UTI.end_time_in_minutes - UTI.time_start_in_minutes) / 60) AS size
 
     FROM schedulings S
 
@@ -54,14 +54,13 @@ export default async function handle(
       ON UTI.week_day = strftime('%w', DATE(S.date, '+1 day'))
 
     WHERE S.user_id = ${user.id} 
+
     AND strftime('%Y-%m', S.date) = ${`${year}-${month}`}
 
     GROUP BY strftime('%d', S.date), size
-
+    
     HAVING amount >= size
   `;
 
-  const unavailableDates = unavailableDatesRaw.map((item) => item.date);
-
-  return res.json({ unavailableWeekdays, unavailableDates });
+  return res.json({ unavailableWeekdays });
 }

@@ -110,8 +110,8 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
           date,
           disabled:
             date.endOf("day").isBefore(new Date()) ||
-            unavailableDates?.unavailableWeekdays.includes(date.get("day")) ||
-            unavailableDates?.unavailableWeekdays.includes(date.get("date")),
+            unavailableDates?.unavailableWeekdays.includes(date.get("days")) ||
+            unavailableDates?.unavailableWeekdays.includes(date.get("date"))
         };
       }),
       ...nextMonthFillArray.map((date) => {
