@@ -5,8 +5,8 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider, { GoogleProfile } from "next-auth/providers/google";
 
 export function buildNextAthOptions(
-  req: NextApiRequest | NextPageContext['req'],
-  res: NextApiResponse | NextPageContext['res']
+  req: NextApiRequest | NextPageContext["req"],
+  res: NextApiResponse | NextPageContext["res"]
 ): NextAuthOptions {
   return {
     adapter: PrismaAdapter(req, res),
@@ -16,19 +16,22 @@ export function buildNextAthOptions(
         clientSecret: process.env.GOOGLE_SECRET_KEY ?? "",
         authorization: {
           params: {
+            prompt: "consent",
+            access_type: "offline",
+            response_type: "code",
             scope:
               "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/calendar",
           },
         },
-        profile: (profile: GoogleProfile) =>{
+        profile: (profile: GoogleProfile) => {
           return {
             id: profile.sub,
             name: profile.name,
-            username: '',
+            username: "",
             email: profile.email,
-            avatar_url: profile.picture
-          }
-        }
+            avatar_url: profile.picture,
+          };
+        },
       }),
     ],
 
@@ -43,12 +46,12 @@ export function buildNextAthOptions(
         return true;
       },
 
-      async session({user, session}) {
+      async session({ user, session }) {
         return {
           ...session,
-          user
-        }
-      }
+          user,
+        };
+      },
     },
   };
 }
