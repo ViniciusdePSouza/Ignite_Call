@@ -17,7 +17,11 @@ interface AvailabilityProps {
   availableHours: number[];
 }
 
-export function CalendarStep() {
+interface CalendarStepProps {
+  onSelectedDateTime: (date: Date) => void;
+}
+
+export function CalendarStep({ onSelectedDateTime }: CalendarStepProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const isDateSelected = !!selectedDate;
   const router = useRouter();
@@ -33,18 +37,30 @@ export function CalendarStep() {
     ? dayjs(selectedDate).format("YYYY-MM-DD")
     : null;
 
-  const { data: availability } = useQuery<AvailabilityProps>(["availability", selectedDateWithNoTime], async () => {
-    const response = await api.get(`users/${username}/availability`, {
-      params: {
-        date: selectedDateWithNoTime,
-      },
-    });
+  const { data: availability } = useQuery<AvailabilityProps>(
+    ["availability", selectedDateWithNoTime],
+    async () => {
+      const response = await api.get(`users/${username}/availability`, {
+        params: {
+          date: selectedDateWithNoTime,
+        },
+      });
 
-    return response.data
-  }, 
-  {
-    enabled: !!selectedDate
-  });
+      return response.data;
+    },
+    {
+      enabled: !!selectedDate,
+    }
+  );
+
+  function handleSelectTime(hour: number) {
+    const dateTimeWithTime = dayjs(selectedDate)
+      .set("hour", hour)
+      .startOf("hour")
+      .toDate();
+
+    onSelectedDateTime(dateTimeWithTime);
+  }
 
   return (
     <Container isTimePickerOpen={isDateSelected}>
@@ -62,7 +78,11 @@ export function CalendarStep() {
               const isItBooked = !availability.availableHours.includes(hour);
 
               return (
-                <TimePickerItem key={hour} disabled={isItBooked}>
+                <TimePickerItem
+                  key={hour}
+                  disabled={isItBooked}
+                  onClick={() => handleSelectTime(hour)}
+                >
                   {formattedHour}:00
                 </TimePickerItem>
               );
