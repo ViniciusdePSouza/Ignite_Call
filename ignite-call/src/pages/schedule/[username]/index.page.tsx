@@ -3,6 +3,7 @@ import { Avatar, Heading, Text } from "@itoddy-ui/react/dist";
 import { GetStaticPaths, GetStaticProps } from "next";
 import { ScheduleForm } from "./ScheduleForm";
 import { Container, UserHeader } from "./styled";
+import { NextSeo } from "next-seo";
 
 interface ScheduleProps {
   user: {
@@ -14,15 +15,19 @@ interface ScheduleProps {
 
 export default function Schedule({ user }: ScheduleProps) {
   return (
-    <Container>
-      <UserHeader>
-        <Avatar src={user.avatarUrl} alt="foto de perfil do usuário" />
-        <Heading>{user.name}</Heading>
-        <Text size="sm">{user.bio}</Text>
-      </UserHeader>
+    <>
+      <NextSeo title={`Marque um horário com ${user.name}| iToddy Call `} />
 
-      <ScheduleForm />
-    </Container>
+      <Container>
+        <UserHeader>
+          <Avatar src={user.avatarUrl} alt="foto de perfil do usuário" />
+          <Heading>{user.name}</Heading>
+          <Text size="sm">{user.bio}</Text>
+        </UserHeader>
+
+        <ScheduleForm />
+      </Container>
+    </>
   );
 }
 

@@ -1,7 +1,6 @@
-
 import { ArrowRight } from "phosphor-react";
 import { Container, Form, FormValidationAdvisor, Header } from "./styles";
-import { TextInput  } from "@ignite-ui/react";
+import { TextInput } from "@ignite-ui/react";
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -11,6 +10,7 @@ import { useEffect } from "react";
 import { api } from "@/lib/axios";
 import { AxiosError } from "axios";
 import { Heading, Multistep, Text, Button } from "@itoddy-ui/react/dist";
+import { NextSeo } from "next-seo";
 
 const registerFormSchema = z.object({
   username: z
@@ -41,17 +41,17 @@ export default function Register() {
   });
 
   async function handleRegisterUser(data: RegisterFormData) {
-    try{
-      await api.post('users', {
+    try {
+      await api.post("users", {
         name: data.name,
-        username: data.username
-      })
+        username: data.username,
+      });
 
-      await router.push('/register/calendar-connection')
-    }catch(err){
-      if(err instanceof AxiosError && err?.response?.data?.message) {
-        alert(err.response.data.message)
-        return
+      await router.push("/register/calendar-connection");
+    } catch (err) {
+      if (err instanceof AxiosError && err?.response?.data?.message) {
+        alert(err.response.data.message);
+        return;
       }
     }
   }
@@ -63,46 +63,47 @@ export default function Register() {
   }, [router.query?.username, setValue]);
 
   return (
-    <Container>
-      <Header>
-        <Heading as="strong">Bem vindo ao iToddy-call!</Heading>
+    <>
+      <NextSeo title="Selecione seu avatar e uma bio | iToddy Call " noindex />
 
-        <Text>
-          Precisamos de algumas informações para criar seu perfil! Ah, você pode
-          editar essas informações depois sem problemas.
-        </Text>
+      <Container>
+        <Header>
+          <Heading as="strong">Bem vindo ao iToddy-call!</Heading>
 
-        <Multistep size={4} currentStep={1} />
-      </Header>
+          <Text>
+            Precisamos de algumas informações para criar seu perfil! Ah, você
+            pode editar essas informações depois sem problemas.
+          </Text>
 
-      <Form as="form" onSubmit={handleSubmit(handleRegisterUser)}>
-        <label>
-          <Text size="sm">Nome do usuário</Text>
-          <TextInput
-            prefix="ignite.com/"
-            placeholder="seu-usuario"
-            {...register("username")}
-          />
-          <FormValidationAdvisor>
-            {errors.username ? errors.username.message : ""}
-          </FormValidationAdvisor>
-        </label>
-        <label>
-          <Text size="sm">Nome Completo</Text>
-          <TextInput
-            placeholder="seu nome completo"
-            {...register("name")}
-          />
-          <FormValidationAdvisor size="sm">
-            {errors.name ? errors.name.message : ""}
-          </FormValidationAdvisor>
-        </label>
+          <Multistep size={4} currentStep={1} />
+        </Header>
 
-        <Button type="submit" disabled={isSubmitting}>
-          Seu Próximo Passo
-          <ArrowRight />
-        </Button>
-      </Form>
-    </Container>
+        <Form as="form" onSubmit={handleSubmit(handleRegisterUser)}>
+          <label>
+            <Text size="sm">Nome do usuário</Text>
+            <TextInput
+              prefix="ignite.com/"
+              placeholder="seu-usuario"
+              {...register("username")}
+            />
+            <FormValidationAdvisor>
+              {errors.username ? errors.username.message : ""}
+            </FormValidationAdvisor>
+          </label>
+          <label>
+            <Text size="sm">Nome Completo</Text>
+            <TextInput placeholder="seu nome completo" {...register("name")} />
+            <FormValidationAdvisor size="sm">
+              {errors.name ? errors.name.message : ""}
+            </FormValidationAdvisor>
+          </label>
+
+          <Button type="submit" disabled={isSubmitting}>
+            Seu Próximo Passo
+            <ArrowRight />
+          </Button>
+        </Form>
+      </Container>
+    </>
   );
 }
