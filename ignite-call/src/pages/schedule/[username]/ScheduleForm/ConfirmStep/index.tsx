@@ -47,7 +47,7 @@ export function ConfirmStep({
       name,
       email,
       observations,
-      data: String(schedulingDate),
+      date: schedulingDate
     };
 
     await api.post(`/users/${username}/schedule`, newEvent);
