@@ -73,6 +73,10 @@ export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
   const currentYear = currentDate.format("YYYY");
 
   const calendarWeeks = useMemo(() => {
+    if(!unavailableDates){
+      return []
+    }
+
     const daysInMonthArray = Array.from({
       length: currentDate.daysInMonth(),
     }).map((_, i) => {
