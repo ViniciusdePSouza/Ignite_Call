@@ -38,12 +38,12 @@ export default async function handler(
     intervals.map((interval) => {
       return prisma.userTimeInterval.create({
         data: {
-            week_day: interval.weekDay,
-            time_start_in_minutes: interval.startTimeInMinutes,
-            end_time_in_minutes: interval.endTimeInMinutes,
-            user_id: session?.user?.id
-        }
-      })
+          week_day: interval.weekDay,
+          time_start_in_minutes: interval.startTimeInMinutes,
+          end_time_in_minutes: interval.endTimeInMinutes,
+          user_id: session!.user.id,
+        },
+      });
     })
   );
 
